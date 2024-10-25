@@ -146,12 +146,14 @@
 	make test # 要跑很久
 	```
 
-	为了使用方便，可以把最常用的`vasp_std`改名为`vasp`。然后在`~/.zshrc`末尾加入以下这行，使得此目录加入到操作系统寻找可执行文件的路径中：
-	`export PATH=$PATH:/path/to/vasp.6.4.3/bin`。最后重启终端或者`source ~/.zshrc`。
-	下载`http://sobereva.com/attach/455/benchmark.Hg.tar.gz`，解压到任意位置。将IN-short改名为INCAR，进入此目录，
-	输入`mpirun -np 4 vasp`测试调用四个核心执行此任务（也要先`export OMP_NUM_THREADS=1`），然后检查得到的OUTCAR看是否内容正常，没报错就说明完全装好了！
+	为了使用方便，可以把最常用的`vasp_std`改名为`vasp`。然后在`~/.zshrc`末尾加入`export PATH=$PATH:/path/to/vasp.6.4.3/bin`，
+	使得此目录加入到操作系统寻找可执行文件的路径中。最后重启终端或者`source ~/.zshrc`。
+
+	下载`http://sobereva.com/attach/455/benchmark.Hg.tar.gz`，解压到任意位置。将`IN-short`改名为`INCAR`，进入此目录，
+	输入`mpirun -np 4 vasp`测试调用四个核心执行此任务（也要先`export OMP_NUM_THREADS=1`），
+	然后检查得到的OUTCAR看是否内容正常，没报错就说明完全装好了！
 	
 
-6. Reference
+7. Reference
 - https://www.bilibili.com/read/cv26550272/
 - https://gist.github.com/janosh/a484f3842b600b60cd575440e99455c0#file-makefile-include
