@@ -1,12 +1,103 @@
-## Install VASP on M2 Macbook air
+# Compiling VASP on M2 Macbook air
 
 0. Some Basic Info
-> MacOS: Sonoma 14.6, 
-> VASP 6.4.3
+> MacOS version: Sonoma 14.6,
+> 
+> VASP version: 6.4.3
 
 
 1. Install Xcode command line tools and brew
-```sh
-xcode-select --install
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+
+   ```sh
+   xcode-select --install
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+   
+2. Install dependencies using Homebrew:
+
+   ```sh
+   brew install gcc openmpi scalapack fftw qd openblas
+   ```
+
+	```make
+	# Default precompiler options
+	CPP_OPTIONS= -DHOST=\"LinuxGNU\" \
+	              -DMPI -DMPI_BLOCK=8000 \
+	              -Duse_collective \
+	              -DscaLAPACK \
+	              -DCACHE_SIZE=4000 \
+	              -Davoidalloc \
+	              -Dvasp6 \
+	              -Duse_bse_te \
+	              -Dtbdyn \
+	              -Dfock_dblbuf \
+	              -D_OPENMP \
+	              -Dqd_emulate
+	
+	CPP        = gcc-14 -E -P -C -w $*$(FUFFIX) >$*$(SUFFIX) $(CPP_OPTIONS)
+	
+	FC         = mpif90 -fopenmp
+	FCL        = mpif90 -fopenmp
+	
+	FREE       = -ffree-form -ffree-line-length-none
+	
+	FFLAGS      = -w -ffpe-summary=invalid,zero,overflow -L /opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/14
+	OFLAG      = -O2
+	OFLAG_IN   = $(OFLAG)
+	DEBUG      = -O0
+	
+	OBJECTS    = fftmpiw.o fftmpi_map.o  fftw3d.o  fft3dlib.o
+	OBJECTS_O1 += fftw3d.o fftmpi.o fftmpiw.o
+	OBJECTS_O2 += fft3dlib.o
+	
+	# For what used to be vasp.5.lib
+	CPP_LIB    = $(CPP)
+	FC_LIB     = $(FC)
+	CC_LIB     = gcc-14
+	CFLAGS_LIB = -O
+	FFLAGS_LIB = -O1
+	FREE_LIB   = $(FREE)
+	
+	OBJECTS_LIB= linpack_double.o getshmem.o
+	
+	# For the parser library
+	CXX_PARS   = g++-14
+	LIBS += parser
+	LLIBS = -Lparser -lparser -lstdc++
+	QD         ?= /opt/homebrew
+	LLIBS      += -L$(QD)/lib -lqdmod -lqd
+	INCS       += -I$(QD)/include/qd
+	
+	# When compiling on the target machine itself, change this to the
+	# relevant target when cross-compiling for another architecture
+	FFLAGS     += -march=native
+	
+	# For gcc-10 and higher (comment out for older versions)
+	FFLAGS     += -fallow-argument-mismatch
+	
+	# BLAS and LAPACK (mandatory)
+	OPENBLAS_ROOT ?= /opt/homebrew/Cellar/openblas/0.3.28
+	BLASPACK    = -L$(OPENBLAS_ROOT)/lib -lopenblas
+	
+	# scaLAPACK (mandatory)
+	SCALAPACK_ROOT ?= /opt/homebrew
+	SCALAPACK   = -L$(SCALAPACK_ROOT)/lib -lscalapack
+	
+	LLIBS      += $(SCALAPACK) $(BLASPACK)
+	
+	# FFTW (mandatory)
+	FFTW_ROOT  ?= /opt/homebrew
+	LLIBS      += -L$(FFTW_ROOT)/lib -lfftw3 -lfftw3_omp
+	INCS       += -I$(FFTW_ROOT)/include
+	
+	# HDF5-support (optional but strongly recommended)
+	#CPP_OPTIONS+= -DVASP_HDF5
+	#HDF5_ROOT  ?= /path/to/your/hdf5/installation
+	#LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
+	#INCS       += -I$(HDF5_ROOT)/include
+	```
+
+> Reference
+>
+> 1. https://www.bilibili.com/read/cv26550272/
+> 2. https://gist.github.com/janosh/a484f3842b600b60cd575440e99455c0#file-makefile-include
