@@ -1,24 +1,33 @@
-# Compiling VASP on M2 Macbook air
+# M2 Macbook air安装VASP
 
-0. Some Basic Info
-> MacOS version: Sonoma 14.6,
+0. 一些版本信息
+> MacOS: Sonoma 14.6,
 > 
-> VASP version: 6.4.3
+> VASP: 6.4.3
 
 
-1. Install Xcode command line tools and brew
+1. 安装Xcode命令行工具和brew
 
-   ```sh
-   xcode-select --install
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
+	```sh
+	xcode-select --install
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	```
    
-2. Install dependencies using Homebrew:
+2. 用brew安装依赖
 
    ```sh
    brew install gcc openmpi scalapack fftw qd openblas
    ```
 
+3. 修改`makefile.include`
+
+	```sh
+	cd /path/to/vasp.6.4.3
+	cp arch/makefile.include.gnu_omp makefile.include
+ 	vim makefile.include
+ 	```
+ 
+	用如下代码替换`makefile.include`全文
 	```make
 	# Default precompiler options
 	CPP_OPTIONS= -DHOST=\"LinuxGNU\" \
