@@ -19,7 +19,7 @@
    brew install gcc openmpi scalapack fftw qd openblas
    ```
 
-3. 修改`makefile.include`
+3. 修改`makefile.include src/parser/makefile src/lib/getshmem.c`
 
 	```sh
 	cd /path/to/vasp.6.4.3
@@ -112,9 +112,11 @@
 	- 修改 `CXX_PARS = g++-14`
 	- 修改 `OPENBLAS_ROOT ?= /opt/homebrew/Cellar/openblas/0.3.28`
  - 通过如下命令查看`gcc openblas`版本和路径
-	> ls /opt/homebrew/bin/gcc* # 查看homebrew安装的gcc大版本，例如gcc-14；
-	> ls /opt/homebrew/Cellar/gcc/ # 检查gcc小版本号，例如13.2.0
-	> ls /opt/homebrew/Cellar/openblas/ # 检查openblas版本，例如0.3.28
+   	```sh
+	ls /opt/homebrew/bin/gcc* # 查看homebrew安装的gcc大版本，例如gcc-14；
+	ls /opt/homebrew/Cellar/gcc/ # 检查gcc路径
+	ls /opt/homebrew/Cellar/openblas/ # 检查openblas版本，例如0.3.28
+	```
 
 > Reference
 >
