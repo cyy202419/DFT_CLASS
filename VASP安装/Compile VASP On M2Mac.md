@@ -19,8 +19,8 @@
    brew install gcc openmpi scalapack fftw qd openblas
    ```
 
-3. 修改`makefile.include src/parser/makefile src/lib/getshmem.c`
-
+3. 修改`makefile.include`，`src/parser/makefile`以及`src/lib/getshmem.c`
+- `makefile.include`
 	```sh
 	cd /path/to/vasp.6.4.3
 	cp arch/makefile.include.gnu_omp makefile.include
@@ -105,18 +105,37 @@
 	#INCS       += -I$(HDF5_ROOT)/include
 	```
  
-- 其中需要根据个人情况修改的地方
-	- 修改 `CPP = gcc-14 -E -P -C -w $*$(FUFFIX) >$*$(SUFFIX) $(CPP_OPTIONS)`
-	- 修改第一个FFLAG路径，`/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/14`
-	- 修改 `CC_LIB = gcc-14`
-	- 修改 `CXX_PARS = g++-14`
-	- 修改 `OPENBLAS_ROOT ?= /opt/homebrew/Cellar/openblas/0.3.28`
- - 通过如下命令查看`gcc openblas`版本和路径
-   	```sh
-	ls /opt/homebrew/bin/gcc* # 查看homebrew安装的gcc大版本，例如gcc-14；
-	ls /opt/homebrew/Cellar/gcc/ # 检查gcc路径
-	ls /opt/homebrew/Cellar/openblas/ # 检查openblas版本，例如0.3.28
-	```
+	- 其中需要根据个人情况修改的地方
+		- 修改 `CPP = gcc-14 -E -P -C -w $*$(FUFFIX) >$*$(SUFFIX) $(CPP_OPTIONS)`
+		- 修改第一个FFLAG路径，`/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/14`
+		- 修改 `CC_LIB = gcc-14`
+		- 修改 `CXX_PARS = g++-14`
+		- 修改 `OPENBLAS_ROOT ?= /opt/homebrew/Cellar/openblas/0.3.28`
+	 - 通过如下命令查看`gcc openblas`版本和路径
+ 
+	   	```sh
+		ls /opt/homebrew/bin/gcc* # 查看homebrew安装的gcc大版本，例如gcc-14；
+		ls /opt/homebrew/Cellar/gcc/ # 检查gcc路径
+		ls /opt/homebrew/Cellar/openblas/ # 检查openblas版本，例如0.3.28
+		```
+- 修改`src/parser/makefile`
+
+`ar vq libparser.a $(CPPOBJ_PARS) $(COBJ_PARS) locproj.tab.h` $\rightarrow$ `ar vq libparser.a $(CPPOBJ_PARS) $(COBJ_PARS)`
+
+- 修改`src/lib/getshmem.c`
+```c
+/*output: shmem id
+*/
+#define SHM_NORESERVE 0 // this line was added
+
+void getshmem_C(size_t _size, int *_id)
+```
+
+4. 编译VASP
+```
+make veryclean
+make std gam ncl
+```
 
 > Reference
 >
