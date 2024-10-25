@@ -3,7 +3,7 @@
 0. 一些版本信息
 > MacOS: Sonoma 14.6,
 > 
-> VASP: 6.4.3
+> VASP: 6.4.3 （找你师兄师姐要）
 
 
 1. 安装Xcode命令行工具和brew
@@ -120,22 +120,39 @@
 		```
 - 修改`src/parser/makefile`
 
-`ar vq libparser.a $(CPPOBJ_PARS) $(COBJ_PARS) locproj.tab.h` $\rightarrow$ `ar vq libparser.a $(CPPOBJ_PARS) $(COBJ_PARS)`
+	`ar vq libparser.a $(CPPOBJ_PARS) $(COBJ_PARS) locproj.tab.h` $\rightarrow$ `ar vq libparser.a $(CPPOBJ_PARS) $(COBJ_PARS)`
 
 - 修改`src/lib/getshmem.c`
-```c
-/*output: shmem id
-*/
-#define SHM_NORESERVE 0 // this line was added
 
-void getshmem_C(size_t _size, int *_id)
-```
+	```c
+	/*output: shmem id
+	*/
+	#define SHM_NORESERVE 0 // this line was added
+	
+	void getshmem_C(size_t _size, int *_id)
+	```
 
 4. 编译VASP
-```
-make veryclean
-make std gam ncl
-```
+
+	```
+	make veryclean
+	make std gam ncl
+	```
+ 
+ 编译成功会在`vasp.6.4.3/bin`文件夹下看到`vasp_std`，`vasp_gam`和`vasp_ncl`，分别为标准版，Gamma only版和非共线版。
+
+5. 测试VASP
+
+	```sh
+	export OMP_NUM_THREADS=1 # 单线程，否则会与多进程冲突，都说很重要
+	make test # 要跑很久
+	```
+
+为了使用方便，可以把最常用的`vasp_std`改名为`vasp`。然后在`~/.zshrc`末尾加入以下这行，使得此目录加入到操作系统寻找可执行文件的路径中：
+`export PATH=$PATH:/path/to/vasp.6.4.3/bin`。最后重启终端或者`source ~/.zshrc`。
+下载`http://sobereva.com/attach/455/benchmark.Hg.tar.gz`，解压到任意位置。将IN-short改名为INCAR，进入此目录，
+输入`mpirun -np 4 vasp`测试调用四个核心执行此任务（也要先`export OMP_NUM_THREADS=1`），然后检查得到的OUTCAR看是否内容正常，没报错就说明完全装好了！
+
 
 > Reference
 >
