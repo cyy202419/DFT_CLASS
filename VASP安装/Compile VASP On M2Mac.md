@@ -24,7 +24,6 @@
 	```sh
 	cd /path/to/vasp.6.4.3
 	cp arch/makefile.include.gnu_omp makefile.include
- 	vim makefile.include
  	```
  
 	用如下代码替换`makefile.include`全文
@@ -105,6 +104,17 @@
 	#LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
 	#INCS       += -I$(HDF5_ROOT)/include
 	```
+ 
+- 其中需要根据个人情况修改的地方
+	- 修改 `CPP = gcc-14 -E -P -C -w $*$(FUFFIX) >$*$(SUFFIX) $(CPP_OPTIONS)`
+	- 修改第一个FFLAG路径，`/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/14`
+	- 修改 `CC_LIB = gcc-14`
+	- 修改 `CXX_PARS = g++-14`
+	- 修改 `OPENBLAS_ROOT ?= /opt/homebrew/Cellar/openblas/0.3.28`
+ - 通过如下命令查看`gcc openblas`版本和路径
+	> ls /opt/homebrew/bin/gcc* # 查看homebrew安装的gcc大版本，例如gcc-14；
+	> ls /opt/homebrew/Cellar/gcc/ # 检查gcc小版本号，例如13.2.0
+	> ls /opt/homebrew/Cellar/openblas/ # 检查openblas版本，例如0.3.28
 
 > Reference
 >
