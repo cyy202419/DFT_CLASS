@@ -1,0 +1,52 @@
+#!/bin/bash/env bash
+
+cat ~/Desktop/PAW/PBE/Mo_pv/POTCAR ~/Desktop/PAW/PBE/S/POTCAR > POTCAR
+
+cat > INCAR <<!
+SYSTEM = MoS2
+ENCUT = 550
+ISTART = 0
+ICHARG = 2
+ISMEAR = 0
+PREC = A
+LWAVE = .F.
+LCHARG = .F.
+NWRITE = 1
+NCORE = 4
+SIGMA = 0.05
+!
+
+cat > KPOINTS <<!
+Automatic mesh
+0
+Gamma
+15 15 1
+0  0  0
+!
+
+for i in $(seq 21 1 30)
+do 
+cat > POSCAR <<!
+Mo1 S2
+1.0
+   1.5920630411037595   -2.7575340760443292    0.0000000000000000
+   1.5920630411037595    2.7575340760443292    0.0000000000000000
+   0.0000000000000000    0.0000000000000000   17.3345999500000012
+Mo S
+1 2
+direct
+   0.0000000000000000    0.0000000000000000    0.0000000000000000 Mo4+
+   0.3333333333333333    0.6666666666666666    0.0894929799999999 S2-
+   0.3333333333333333    0.6666666666666667    0.9105070200000001 S2-
+!
+
+(echo 92; echo 922; echo $i)|vaspkit
+
+cat POSCAR_REV > POSCAR
+
+echo "vacuum = $i" ; time mpirun -np 2 vasp
+
+E=$(grep "TOTEN" OUTCAR | tail -1 | awk '{printf "%12.9f \n", $5 }')
+echo $i $E >> vacuum_energy_morek.dat
+
+done
