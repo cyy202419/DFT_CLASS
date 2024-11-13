@@ -1,0 +1,67 @@
+#!/bin/bash/env bash
+
+cat ~/Desktop/PAW/PBE/Mo_pv/POTCAR ~/Desktop/PAW/PBE/S/POTCAR > POTCAR
+
+cat > INCAR <<!
+# Starting parameters
+SYSTEM = MoS2
+ISTART = 0
+ICHARG = 2
+LWAVE = .F.
+LCHARG = .F.
+NWRITE = 1
+
+# Parameters for electronic SCF iteration
+ENCUT = 500
+ALGO = F
+LDIAG = .TURE.
+EDIFF = 1E-6
+ADDGRID = .TRUE.
+SIGMA = 0.05
+ISMEAR = 0
+LASPH = .TRUE.
+NELM = 150
+NELMIN = 6
+NELMDL = -12
+
+# Parameters for Ionic relaxations
+IBRION = 2
+POTIM = 0.5
+NSW = 150
+ISIF = 4
+ISYM = 0
+EDIFFG = -0.01
+
+# Exchange correlation function
+GGA = PE
+IVDW = 11
+
+# Other parameters
+PREC = A
+NCORE = 4
+!
+
+cat > KPOINTS <<!
+Automatic mesh
+0
+Gamma
+15 15 1
+0  0  0
+!
+
+cat > POSCAR <<!
+Mo1 S2
+   1.000
+    3.1640000000426398    0.0000000000000000    0.0000000000000000
+   -1.5820000000639600    2.7401043775862726    0.0000000000000000
+    0.0000000000000000    0.0000000000000000   23.1026500132666968
+   Mo   S 
+    1    2
+Direct
+    0.0000000000000000    0.0000000000000000    0.5000000000000000    Mo1
+    0.3333333333333334    0.6666666666666666    0.5671492233896329     S1
+    0.3333333333333333    0.6666666666666667    0.4328507766103671     S2
+!
+
+time mpirun -np 2 vasp
+
