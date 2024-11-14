@@ -1,7 +1,7 @@
 # M2 Macbook air安装VASP
 
 0. 一些版本信息
-	> MacOS: Sonoma 14.6, VASP: 6.4.3 （找你师兄师姐要）
+	> MacOS: Sonoma 14.6, VASP: 6.4.3 
 
 
 1. 安装Xcode命令行工具和brew
