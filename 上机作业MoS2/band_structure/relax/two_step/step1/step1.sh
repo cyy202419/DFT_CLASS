@@ -1,6 +1,6 @@
-#!/bin/bash/env bash
+#!/bin/sh
 
-cat ~/Desktop/PAW/PBE/Mo_pv/POTCAR ~/Desktop/PAW/PBE/S/POTCAR > POTCAR
+cat /path/to/Mo_pv/POTCAR /path/to/S/POTCAR > POTCAR
 
 cat > INCAR <<!
 # Starting parameters
@@ -38,7 +38,7 @@ IVDW = 11
 
 # Other parameters
 PREC = A
-NCORE = 4
+NORE = 12
 !
 
 cat > KPOINTS <<!
@@ -52,8 +52,8 @@ Gamma
 cat > POSCAR <<!
 Mo1 S2
    1.000
-    3.1640000000426398    0.0000000000000000    0.0000000000000000
-   -1.5820000000639600    2.7401043775862726    0.0000000000000000
+    1.5920630411037595   -2.7575340760443292    0.0000000000000000
+    1.5920630411037595    2.7575340760443292    0.0000000000000000
     0.0000000000000000    0.0000000000000000   23.1026500132666968
    Mo   S 
     1    2
@@ -63,5 +63,4 @@ Direct
     0.3333333333333333    0.6666666666666667    0.4328507766103671     S2
 !
 
-time mpirun -np 2 vasp
-
+srun vasp_std
