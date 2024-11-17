@@ -1,5 +1,8 @@
-#!/bin/bash/env bash
+#!/bin/sh
+# 改成赝势路径
 cat ~/Desktop/PAW/PBE/Mo_pv/POTCAR ~/Desktop/PAW/PBE/S/POTCAR > POTCAR
+# import vasp module
+
 cat > KPOINTS <<!
 Automatic mesh
 0
@@ -34,10 +37,9 @@ PREC = Accurate
 LWAVE = .F.
 LCHARG = .F.
 NWRITE = 1
-NCORE = 4
 !
 
-echo "ENCUT = $i eV" ; time mpirun -np 2 vasp
+echo "ENCUT = $i eV" ; srun vasp_std
 E=$(grep "TOTEN" OUTCAR | tail -1 | awk '{printf "%12.9f \n", $5 }')
 echo $i $E >>encut_energy.dat
 done
